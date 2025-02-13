@@ -12,6 +12,7 @@ import {
 } from "@radix-ui/themes";
 import { FormEventHandler } from "react";
 import { z } from "zod";
+import useTasks from "../hooks/useTasks";
 
 const CreateTaskSchema = z.object({
   title: z.string(),
@@ -21,6 +22,7 @@ const CreateTaskSchema = z.object({
 });
 
 export const CreateTaskForm: React.FC = () => {
+  const { createTask } = useTasks();
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (ev) => {
     ev.preventDefault();
 
@@ -34,12 +36,12 @@ export const CreateTaskForm: React.FC = () => {
     ev.currentTarget.reset();
 
     const taskData = CreateTaskSchema.parse({
-      title,
-      description,
-      status,
-      priority,
+      title: title,
+      description: description,
+      status: status,
+      priority: priority,
     });
-    alert(JSON.stringify(taskData));
+    await createTask(taskData);
   };
 
   return (
@@ -111,7 +113,7 @@ export const CreateTaskForm: React.FC = () => {
                 <Text as="div" mb="2">
                   Prioridade
                 </Text>
-                <RadioGroup.Root name="priotiry" defaultValue="low">
+                <RadioGroup.Root name="priority" defaultValue="low">
                   <RadioGroup.Item value="low">
                     <Badge color="sky">Baixa</Badge>
                   </RadioGroup.Item>
